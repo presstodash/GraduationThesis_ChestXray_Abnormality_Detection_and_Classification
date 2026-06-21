@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
+<title>CXR Analyser</title>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <path d="M9 12h6M12 9v6"/>
+    </svg>
+  </div>
+  <span class="header-title">CXR <span>Analyser</span></span>
+  <div class="header-status">
+    <div class="status-dot" id="status-dot"></div>
+    <span id="status-text">checking server...</span>
+  </div>
+</header>
+
+<main>
+  <div class="viewer-pane">
+    <div class="viewer-toolbar">
+      <span class="toolbar-label">Chest X-Ray Viewer</span>
+      <div class="confidence-group">
+        <span class="toolbar-label">Confidence</span>
+        <input type="range" id="confidence-slider" min="0" max="100" value="50" step="1">
+        <span id="confidence-value">0.50</span>
+      </div>
+    </div>
+
+    <div class="canvas-container">
+      <div id="drop-zone">
+        <div class="drop-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <p class="drop-label"><strong>Drop a chest X-ray image</strong><br>or click to browse</p>
+      </div>
+
+      <div id="spinner">
+        <div class="spinner-ring"></div>
+        <span class="spinner-text">Running inference...</span>
+      </div>
+
+      <canvas id="viewer-canvas"></canvas>
+      <input type="file" id="file-input" accept="image/*">
+    </div>
+  </div>
+
+  <div class="side-panel">
+
+    <div class="panel-section local-mode-panel">
+      <div class="panel-section-header">Local demo mode</div>
+      <div class="local-mode-body">
+        <div class="local-mode-title">Offline by design</div>
+        <p>Inference is sent only to the local server on this machine.</p>
+        <p>No cloud endpoint can be configured from this interface.</p>
+        <p class="demo-warning">Research and educational demonstration only. Not intended for clinical diagnosis or treatment decisions.</p>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="button-row">
+        <button class="upload-btn" id="upload-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Load Image
+        </button>
+
+        <button class="upload-btn" id="clear-btn">
+          Clear Image
+        </button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-header">
+        Global classification
+        <span class="badge" id="classification-count">0</span>
+      </div>
+    </div>
+
+    <div class="classification-list" id="classification-list">
+      <div class="empty-state">No classification results.</div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-header">
+        Findings
+        <span class="badge" id="findings-count">0</span>
+      </div>
+    </div>
+
+    <div class="findings-list" id="findings-list">
+      <div class="empty-state">No image loaded.<br>Upload a chest X-ray to begin analysis.</div>
+    </div>
+
+  </div>
+</main>
+
+<div id="error-toast"></div>
+<script src="script.js"></script>
